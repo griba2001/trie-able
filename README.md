@@ -1,0 +1,1 @@
+Haskell "trie" dictionaries interface to bytestring-trie for use with other key types, initially Text

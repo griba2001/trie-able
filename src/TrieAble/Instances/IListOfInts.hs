@@ -29,13 +29,12 @@ instance TrieAble [Int16] where
 
 chunksOf :: Int -> [Word8] -> [[Word8]]  
 chunksOf n xs = assert (length xs `mod` n == 0) .  L.unfoldr (chunk n) $ xs
-
-chunk :: Int -> [Word8] -> Maybe ([Word8], [Word8])
-chunk n w8l = if L.null firsts
+  where
+    chunk n w8l = if L.null firsts
                  then Nothing
                  else Just (firsts, rest)
-  where
-    (firsts, rest) = splitAt n w8l
+        where
+          (firsts, rest) = splitAt n w8l
   
 
 bs2Word32 :: [Word8] -> Word32

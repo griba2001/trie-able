@@ -3,3 +3,4 @@ module TrieAble.Instances (
 ) where
 
 import TrieAble.Instances.InstanceText as X
+import TrieAble.Instances.IListOfInts as X

@@ -8,7 +8,7 @@ import qualified Data.Set as S
 import qualified Data.List as L
 
 import TrieAble.TrieAble as T
-import TrieAble.InstanceText()
+import TrieAble.Instances()
 
 (.$) :: a -> (a -> b) -> b
 (.$) = flip ($)

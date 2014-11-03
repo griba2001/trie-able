@@ -1,4 +1,4 @@
-module TrieAble.InstanceText where
+module TrieAble.Instances.InstanceText where
 
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf16BE, decodeUtf16BE)

@@ -12,6 +12,7 @@ import qualified Data.Foldable as F
 import Data.Bits
 import Data.Word
 import Data.Int
+import Control.Exception (assert)
 
 import TrieAble.TrieAble
 
@@ -20,15 +21,17 @@ import TrieAble.TrieAble
 
 instance TrieAble [Int32] where
   toByteString = toStrict . toLazyByteString . F.foldMap int32BE
-  fromByteString = L.map (fromIntegral . bs2Word32) . L.unfoldr (chunk 4) . BS.unpack
+  fromByteString = L.map (fromIntegral . bs2Word32) . chunksOf 4 . BS.unpack
 
 instance TrieAble [Int16] where
   toByteString = toStrict . toLazyByteString . F.foldMap int16BE
-  fromByteString = L.map (fromIntegral . bs2Word16) . L.unfoldr (chunk 2) . BS.unpack
-  
+  fromByteString = L.map (fromIntegral . bs2Word16) . chunksOf 2 . BS.unpack
+
+chunksOf :: Int -> [Word8] -> [[Word8]]  
+chunksOf n xs = assert (length xs `mod` n == 0) .  L.unfoldr (chunk n) $ xs
 
 chunk :: Int -> [Word8] -> Maybe ([Word8], [Word8])
-chunk n w8l = if length firsts < n
+chunk n w8l = if L.null firsts
                  then Nothing
                  else Just (firsts, rest)
   where

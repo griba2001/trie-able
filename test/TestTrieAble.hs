@@ -33,6 +33,3 @@ propSorted xs = compare sorted_xs' (T.keys tr1)  == EQ
                 insert' (k, v) !t = T.insert k v t      
                 (unsorted_xs', sorted_xs') = nubAndSort $ L.map Tx.pack xs
 
-
-propListOfIntsTrieAble :: [[Int32]] -> Bool
-propListOfIntsTrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs

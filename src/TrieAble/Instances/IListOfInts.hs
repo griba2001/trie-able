@@ -1,6 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 module TrieAble.Instances.IListOfInts(
--- export only instances
+  propListOfInt32TrieAble,
+  propListOfInt16TrieAble,
 ) where
 
 import Data.ByteString (ByteString)
@@ -40,9 +41,21 @@ chunksOf n xs = assert (length xs `mod` n == 0) .  L.unfoldr (chunk n) $ xs
 bs2Word32 :: [Word8] -> Word32
 bs2Word32 [t,h,m,l] = shiftLFrom t 24 .|. shiftLFrom h 16 .|. shiftLFrom m 8 .|. fromIntegral l
   where
-    shiftLFrom x = shiftL (fromIntegral x)
+    shiftLFrom = shiftL . fromIntegral
           
 bs2Word16 :: [Word8] -> Word16
 bs2Word16 [m,l] = shiftLFrom m 8 .|. fromIntegral l
   where
-    shiftLFrom x = shiftL (fromIntegral x)
+    shiftLFrom = shiftL . fromIntegral
+
+-------------------------------------------------------------------------------
+
+-- Invariants
+
+
+propListOfInt32TrieAble :: [[Int32]] -> Bool
+propListOfInt32TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+
+
+propListOfInt16TrieAble :: [[Int16]] -> Bool
+propListOfInt16TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs

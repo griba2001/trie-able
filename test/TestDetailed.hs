@@ -5,6 +5,7 @@ import qualified Test.QuickCheck as Q
 import Distribution.TestSuite as TS
 
 import TestTrieAble
+import TrieAble.Instances (propListOfInt32TrieAble, propListOfInt16TrieAble)
 
 toTSResult :: Q.Result -> TS.Result
 toTSResult Q.Success {} = TS.Pass
@@ -19,5 +20,6 @@ runQuickCheck prop = do
         
 tests :: IO [Test]
 tests = return [ Test $ TestInstance (runQuickCheck propSorted) "propSorted" ["text"] [] undefined,
-                 Test $ TestInstance (runQuickCheck propListOfIntsTrieAble) "propListOfIntsTrieAble" ["list of ints"] [] undefined
+                 Test $ TestInstance (runQuickCheck propListOfInt32TrieAble) "propListOfInt32TrieAble" ["list of ints"] [] undefined,
+                 Test $ TestInstance (runQuickCheck propListOfInt16TrieAble) "propListOfInt16TrieAble" ["list of ints"] [] undefined        
                  ]

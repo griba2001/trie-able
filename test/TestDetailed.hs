@@ -18,5 +18,6 @@ runQuickCheck prop = do
         return $ (Finished . toTSResult) qres
         
 tests :: IO [Test]
-tests = return [ Test $ TestInstance (runQuickCheck propSorted) "propSorted" ["set"] [] undefined
+tests = return [ Test $ TestInstance (runQuickCheck propSorted) "propSorted" ["text"] [] undefined,
+                 Test $ TestInstance (runQuickCheck propListOfIntsTrieAble) "propListOfIntsTrieAble" ["list of ints"] [] undefined
                  ]

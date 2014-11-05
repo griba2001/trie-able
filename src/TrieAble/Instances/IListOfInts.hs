@@ -62,22 +62,24 @@ combine32 = liftA2 (mappend) (word8 . posNegOrder) int32BE
 combine64 :: Int64 -> Builder
 combine64 = liftA2 (mappend) (word8 . posNegOrder) int64BE
 
-
-bs2Word32 :: [Word8] -> Word32
-bs2Word32 [t,h,m,l] = shiftLFrom t 24 .|. shiftLFrom h 16 .|. shiftLFrom m 8 .|. fromIntegral l
-  where
-    shiftLFrom = shiftL . fromIntegral
-          
+       
 bs2Word16 :: [Word8] -> Word16
 bs2Word16 [m,l] = shiftLFrom m 8 .|. fromIntegral l
   where
     shiftLFrom = shiftL . fromIntegral
 
+bs2Word32 :: [Word8] -> Word32
+bs2Word32 ws = L.foldl' (.|.) 0 zipped
+  where
+    zipped = L.zipWith (shiftLFrom) (reverse ws) weights
+    weights = L.map (*8) [0..]
+    shiftLFrom = shiftL . fromIntegral
+    
 bs2Word64 :: [Word8] -> Word64
 bs2Word64 ws = L.foldl' (.|.) 0 zipped
   where      
     zipped = L.zipWith (shiftLFrom) (reverse ws) weights
-    weights = L.map (\x -> 8 * x) [0..]
+    weights = L.map (*8) [0..]
     shiftLFrom = shiftL . fromIntegral
     
 

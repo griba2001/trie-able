@@ -3,7 +3,7 @@
 ListOfInts / byteString conversions to use in prefix trees (Tries)
 
 Since negative Integers have binary representations higher as Word than positive ones
-I add a posNegOrder prefix to the Big endian [word8] rep. to restore negatives position
+I add a posNegOrder prefix to the Big endian [word8] rep. to restore non-negatives precedence
 -}
 module TrieAble.Instances.IListOfInts(
   propListOfInt32TrieAble,

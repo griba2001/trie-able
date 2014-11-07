@@ -3,7 +3,7 @@
 ListOfInts / byteString conversions to use in prefix trees (Tries)
 
 Since negative Integers have binary representations higher as Word than positive ones
-I flip sign bit in wordX rep. to restore non-negatives precedence
+I flip the sign bit in wordX rep. to restore non-negatives precedence
 -}
 module TrieAble.Instances.IListOfInts(
 -- export instances only
@@ -19,7 +19,6 @@ import Data.Bits
 import Data.Word
 import Data.Int
 import Control.Exception (assert)
-import Control.Applicative (liftA2)
 import Data.Monoid
 
 

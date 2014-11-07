@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, TypeSynonymInstances, BangPatterns #-}
+{-# LANGUAGE FlexibleInstances #-} 
 {-|
 ListOfInts / byteString conversions to use in prefix trees (Tries)
 

@@ -21,6 +21,9 @@ import qualified Data.List as L
 class (Ord k) => TrieAble k where
   toByteString :: k -> ByteString
   fromByteString :: ByteString -> k
+  
+  propIsKeyTrieAble :: [k] -> Bool
+  propIsKeyTrieAble = L.all (\x -> (fromByteString . toByteString $ x) == x)
 
 --------------------------------------
 

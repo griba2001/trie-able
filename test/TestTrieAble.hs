@@ -24,27 +24,28 @@ nubAndSort xs = (S.toList balSet, S.toAscList balSet)
                 insert' k !set = S.insert k set
 
 -------------------------------------------------------------------------------------
+  
 propKeyListOfInt16TrieAble :: [[Int16]] -> Bool
-propKeyListOfInt16TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+propKeyListOfInt16TrieAble = propIsKeyTrieAble
 
 propKeyListOfInt32TrieAble :: [[Int32]] -> Bool
-propKeyListOfInt32TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+propKeyListOfInt32TrieAble = propIsKeyTrieAble
 
 propKeyListOfInt64TrieAble :: [[Int64]] -> Bool
-propKeyListOfInt64TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+propKeyListOfInt64TrieAble = propIsKeyTrieAble
 
 
 class TrieAble t => PropListSorted t where
   propTrieOfKeyListSorted :: [t] -> Bool
-  propTrieOfKeyListSorted xss = compare sorted_xss xss' == EQ
+  propTrieOfKeyListSorted xs = compare sorted_xs xs' == EQ
         where
-                xss' = T.keys tr1
-                tr1 = L.reverse unsorted_xss
+                xs' = T.keys tr1
+                tr1 = L.reverse unsorted_xs
                        .$ zipWithIndex
                        .$ L.foldl' (flip insert') T.empty
 
                 insert' (k, v) !t = T.insert k v t
-                (unsorted_xss, sorted_xss) = nubAndSort xss
+                (unsorted_xs, sorted_xs) = nubAndSort xs
 
 instance PropListSorted [Int16]
 instance PropListSorted [Int32]

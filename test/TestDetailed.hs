@@ -20,9 +20,9 @@ runQuickCheck propTrieOfKey = do
         
 tests :: IO [Test]
 tests = return [ Test $ TestInstance (runQuickCheck propTrieOfKeyTextSorted) "propTrieOfKeyTextSorted" ["text"] [] undefined,
-                 Test $ TestInstance (runQuickCheck propTrieOfKeyListOfInt16TrieAble) "propTrieOfKeyListOfInt16TrieAble" ["list of ints"] [] undefined,
-                 Test $ TestInstance (runQuickCheck propTrieOfKeyListOfInt32TrieAble) "propTrieOfKeyListOfInt32TrieAble" ["list of ints"] [] undefined,
-                 Test $ TestInstance (runQuickCheck propTrieOfKeyListOfInt64TrieAble) "propTrieOfKeyListOfInt64TrieAble" ["list of ints"] [] undefined,
+                 Test $ TestInstance (runQuickCheck propKeyListOfInt16TrieAble) "propKeyListOfInt16TrieAble" ["list of ints"] [] undefined,
+                 Test $ TestInstance (runQuickCheck propKeyListOfInt32TrieAble) "propKeyListOfInt32TrieAble" ["list of ints"] [] undefined,
+                 Test $ TestInstance (runQuickCheck propKeyListOfInt64TrieAble) "propKeyListOfInt64TrieAble" ["list of ints"] [] undefined,
                  Test $ TestInstance (runQuickCheck propTrieOfKeyListOfInt16Sorted) "propTrieOfKeyListOfInt16Sorted" ["list of ints"] [] undefined,
                  Test $ TestInstance (runQuickCheck propTrieOfKeyListOfInt32Sorted) "propTrieOfKeyListOfInt32Sorted" ["list of ints"] [] undefined,
                  Test $ TestInstance (runQuickCheck propTrieOfKeyListOfInt64Sorted) "propTrieOfKeyListOfInt64Sorted" ["list of ints"] [] undefined

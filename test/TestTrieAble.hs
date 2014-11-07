@@ -24,14 +24,14 @@ nubAndSort xs = (S.toList balSet, S.toAscList balSet)
                 insert' k !set = S.insert k set
 
 -------------------------------------------------------------------------------------
-propTrieOfKeyListOfInt16TrieAble :: [[Int16]] -> Bool
-propTrieOfKeyListOfInt16TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+propKeyListOfInt16TrieAble :: [[Int16]] -> Bool
+propKeyListOfInt16TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
 
-propTrieOfKeyListOfInt32TrieAble :: [[Int32]] -> Bool
-propTrieOfKeyListOfInt32TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+propKeyListOfInt32TrieAble :: [[Int32]] -> Bool
+propKeyListOfInt32TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
 
-propTrieOfKeyListOfInt64TrieAble :: [[Int64]] -> Bool
-propTrieOfKeyListOfInt64TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+propKeyListOfInt64TrieAble :: [[Int64]] -> Bool
+propKeyListOfInt64TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
 
 
 class TrieAble t => PropListSorted t where

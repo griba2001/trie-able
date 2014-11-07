@@ -5,7 +5,7 @@ import qualified Test.QuickCheck as Q
 import Distribution.TestSuite as TS
 
 import TestTrieAble
-import TrieAble.Instances (propListOfInt32TrieAble, propListOfInt16TrieAble, propListOfInt64TrieAble)
+import TrieAble.Instances ()
 
 toTSResult :: Q.Result -> TS.Result
 toTSResult Q.Success {} = TS.Pass
@@ -19,8 +19,13 @@ runQuickCheck prop = do
         return $ (Finished . toTSResult) qres
         
 tests :: IO [Test]
-tests = return [ Test $ TestInstance (runQuickCheck propSorted) "propSorted" ["text"] [] undefined,
+tests = return [ Test $ TestInstance (runQuickCheck propKeyTextSorted) "propKeyTextSorted" ["text"] [] undefined,
                  Test $ TestInstance (runQuickCheck propListOfInt16TrieAble) "propListOfInt16TrieAble" ["list of ints"] [] undefined,        
                  Test $ TestInstance (runQuickCheck propListOfInt32TrieAble) "propListOfInt32TrieAble" ["list of ints"] [] undefined,
-                 Test $ TestInstance (runQuickCheck propListOfInt64TrieAble) "propListOfInt64TrieAble" ["list of ints"] [] undefined
+                 Test $ TestInstance (runQuickCheck propListOfInt64TrieAble) "propListOfInt64TrieAble" ["list of ints"] [] undefined,
+                 Test $ TestInstance (runQuickCheck propListOfInt16Sorted) "propListOfInt16Sorted" ["list of ints"] [] undefined,
+                 Test $ TestInstance (runQuickCheck propListOfInt32Sorted) "propListOfInt32Sorted" ["list of ints"] [] undefined,
+                 Test $ TestInstance (runQuickCheck propListOfInt64Sorted) "propListOfInt64Sorted" ["list of ints"] [] undefined
                  ]
+
+                 

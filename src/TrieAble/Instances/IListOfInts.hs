@@ -1,19 +1,17 @@
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances, BangPatterns #-}
 {-|
 ListOfInts / byteString conversions to use in prefix trees (Tries)
 
 Since negative Integers have binary representations higher as Word than positive ones
-I add a posNegOrder prefix to the Big endian [word8] rep. to restore non-negatives precedence
+I flip sign bit in wordX rep. to restore non-negatives precedence
 -}
 module TrieAble.Instances.IListOfInts(
-  propListOfInt32TrieAble,
-  propListOfInt16TrieAble,
-  propListOfInt64TrieAble,        
+-- export instances only
 ) where
 
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as BS
-import Data.ByteString.Builder (Builder, int16BE, int32BE, int64BE, word8, toLazyByteString)
+import Data.ByteString.Builder (Builder, word8, word16BE, word32BE, word64BE, toLazyByteString)
 import Data.ByteString.Lazy as LBS (toStrict, fromStrict)
 import qualified Data.List as L
 import qualified Data.Foldable as F
@@ -24,22 +22,25 @@ import Control.Exception (assert)
 import Control.Applicative (liftA2)
 import Data.Monoid
 
-import TrieAble.TrieAble
+
+import TrieAble.TrieAble as T
 
 (.$) :: a -> (a -> b) -> b
 (.$) = flip ($)
 
 instance TrieAble [Int16] where
   toByteString = toStrict . toLazyByteString . F.foldMap combine16
-  fromByteString = L.map (fromIntegral . bs2Word16 . drop 1) . chunksOf 3 . BS.unpack
+  fromByteString = L.map (fromIntegral . flipSignBit16 . bigEndianBs2WordX) . chunksOf 2 . BS.unpack
 
 instance TrieAble [Int32] where
   toByteString = toStrict . toLazyByteString . F.foldMap combine32
-  fromByteString = L.map (fromIntegral . bs2Word32 . drop 1) . chunksOf 5 . BS.unpack
+  fromByteString = L.map (fromIntegral . flipSignBit32 . bigEndianBs2WordX) . chunksOf 4 . BS.unpack
 
 instance TrieAble [Int64] where
   toByteString = toStrict . toLazyByteString . F.foldMap combine64
-  fromByteString = L.map (fromIntegral . bs2Word64 . drop 1) . chunksOf 9 . BS.unpack
+  fromByteString = L.map (fromIntegral . flipSignBit64 . bigEndianBs2WordX) . chunksOf 8 . BS.unpack
+
+-------------------------------------------------------------------------------
 
 chunksOf :: Int -> [Word8] -> [[Word8]]  
 chunksOf n xs = assert (length xs `mod` n == 0) .  L.unfoldr (chunk n) $ xs
@@ -50,48 +51,42 @@ chunksOf n xs = assert (length xs `mod` n == 0) .  L.unfoldr (chunk n) $ xs
         where
           (firsts, rest) = splitAt n w8l
 
-posNegOrder :: (Num a, Ord a, Integral a) => a -> Word8
-posNegOrder = fromIntegral . (\x -> if x >= 0 then 1 else 0)
+-----------------------------------------------------------------------          
 
+flipSignBit16 :: Word16 -> Word16
+flipSignBit16 = flip complementBit 15
+
+flipSignBit32 :: Word32 -> Word32
+flipSignBit32 = flip complementBit 31
+
+flipSignBit64 :: Word64 -> Word64
+flipSignBit64 = flip complementBit 63
+          
 combine16 :: Int16 -> Builder
-combine16 = liftA2 (mappend) (word8 . posNegOrder) int16BE
+combine16 x = (fromIntegral x :: Word16) .$ flipSignBit16 .$ word16BE 
 
 combine32 :: Int32 -> Builder
-combine32 = liftA2 (mappend) (word8 . posNegOrder) int32BE
+combine32 x = (fromIntegral x :: Word32) .$ flipSignBit32 .$ word32BE
 
 combine64 :: Int64 -> Builder
-combine64 = liftA2 (mappend) (word8 . posNegOrder) int64BE
+combine64 x = (fromIntegral x :: Word64) .$ flipSignBit64 .$ word64BE
 
-       
-bs2Word16 :: [Word8] -> Word16
-bs2Word16 [m,l] = shiftLFrom m 8 .|. fromIntegral l
-  where
-    shiftLFrom = shiftL . fromIntegral
 
-bs2Word32 :: [Word8] -> Word32
-bs2Word32 ws = L.foldl' (.|.) 0 zipped
-  where
-    zipped = L.zipWith (shiftLFrom) (reverse ws) weights
-    weights = L.map (*8) [0..]
-    shiftLFrom = shiftL . fromIntegral
-    
-bs2Word64 :: [Word8] -> Word64
-bs2Word64 ws = L.foldl' (.|.) 0 zipped
-  where      
-    zipped = L.zipWith (shiftLFrom) (reverse ws) weights
-    weights = L.map (*8) [0..]
-    shiftLFrom = shiftL . fromIntegral
-    
+-----------------------------------------------------------------------
 
--------------------------------------------------------------------------------
 
--- Invariants
+class (Num t, Bits t) => BEByteString2WordX t where
+  bigEndianBs2WordX :: [Word8] -> t      
+  bigEndianBs2WordX ws = L.foldl' (.|.) 0 zipped
+    where
+      zipped = L.zipWith (shiftLFrom) (reverse ws) weights
+      weights = L.map (*8) [0..]
+      shiftLFrom = shiftL . fromIntegral
+        
+instance BEByteString2WordX Word16
+instance BEByteString2WordX Word32
+instance BEByteString2WordX Word64
 
-propListOfInt16TrieAble :: [[Int16]] -> Bool
-propListOfInt16TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
 
-propListOfInt32TrieAble :: [[Int32]] -> Bool
-propListOfInt32TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
 
-propListOfInt64TrieAble :: [[Int64]] -> Bool
-propListOfInt64TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+                

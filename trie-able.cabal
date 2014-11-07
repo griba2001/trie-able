@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                trie-able
-version:             0.2.1.5
+version:             0.2.1.6
 synopsis:            Trie dictionary
 -- description:         
 license:             BSD3

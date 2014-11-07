@@ -1,4 +1,4 @@
-{-# LANGUAGE PackageImports, BangPatterns #-}
+{-# LANGUAGE PackageImports, BangPatterns, FlexibleInstances, TypeSynonymInstances #-}
 module TestTrieAble where
 
 import Data.Text (Text)
@@ -23,13 +23,42 @@ nubAndSort xs = (S.toList balSet, S.toAscList balSet)
                 balSet = L.foldl' (flip insert') S.empty xs
                 insert' k !set = S.insert k set
 
-propSorted :: [String] -> Bool
-propSorted xs = compare sorted_xs' (T.keys tr1)  == EQ
+-------------------------------------------------------------------------------------
+propListOfInt16TrieAble :: [[Int16]] -> Bool
+propListOfInt16TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+
+propListOfInt32TrieAble :: [[Int32]] -> Bool
+propListOfInt32TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+
+propListOfInt64TrieAble :: [[Int64]] -> Bool
+propListOfInt64TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+
+
+class TrieAble t => PropListSorted t where
+  propListSorted :: [t] -> Bool
+  propListSorted xss = compare sorted_xss xss' == EQ
         where
-                tr1 = L.reverse unsorted_xs'
+                xss' = T.keys tr1
+                tr1 = L.reverse unsorted_xss
                        .$ zipWithIndex
                        .$ L.foldl' (flip insert') T.empty
-                       
-                insert' (k, v) !t = T.insert k v t      
-                (unsorted_xs', sorted_xs') = nubAndSort $ L.map Tx.pack xs
 
+                insert' (k, v) !t = T.insert k v t
+                (unsorted_xss, sorted_xss) = nubAndSort xss
+
+instance PropListSorted [Int16]
+instance PropListSorted [Int32]
+instance PropListSorted [Int64]
+instance PropListSorted Text
+
+propListOfInt16Sorted :: [[Int16]] -> Bool
+propListOfInt16Sorted = propListSorted
+
+propListOfInt32Sorted :: [[Int32]] -> Bool
+propListOfInt32Sorted = propListSorted
+
+propListOfInt64Sorted :: [[Int64]] -> Bool
+propListOfInt64Sorted = propListSorted
+
+propKeyTextSorted :: [String] -> Bool
+propKeyTextSorted = propListSorted . L.map Tx.pack

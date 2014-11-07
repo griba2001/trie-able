@@ -19,7 +19,7 @@ import Data.Bits
 import Data.Word
 import Data.Int
 import Control.Exception (assert)
-import Data.Monoid
+import Control.Category ((>>>))
 
 
 import TrieAble.TrieAble as T
@@ -62,13 +62,13 @@ flipSignBit64 :: Word64 -> Word64
 flipSignBit64 = flip complementBit 63
           
 combine16 :: Int16 -> Builder
-combine16 x = (fromIntegral x :: Word16) .$ flipSignBit16 .$ word16BE 
+combine16 = fromIntegral >>> flipSignBit16 >>> word16BE
 
 combine32 :: Int32 -> Builder
-combine32 x = (fromIntegral x :: Word32) .$ flipSignBit32 .$ word32BE
+combine32 = fromIntegral >>> flipSignBit32 >>> word32BE
 
 combine64 :: Int64 -> Builder
-combine64 x = (fromIntegral x :: Word64) .$ flipSignBit64 .$ word64BE
+combine64 = fromIntegral >>> flipSignBit64 >>> word64BE
 
 
 -----------------------------------------------------------------------

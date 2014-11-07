@@ -24,19 +24,19 @@ nubAndSort xs = (S.toList balSet, S.toAscList balSet)
                 insert' k !set = S.insert k set
 
 -------------------------------------------------------------------------------------
-propListOfInt16TrieAble :: [[Int16]] -> Bool
-propListOfInt16TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+propTrieOfKeyListOfInt16TrieAble :: [[Int16]] -> Bool
+propTrieOfKeyListOfInt16TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
 
-propListOfInt32TrieAble :: [[Int32]] -> Bool
-propListOfInt32TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+propTrieOfKeyListOfInt32TrieAble :: [[Int32]] -> Bool
+propTrieOfKeyListOfInt32TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
 
-propListOfInt64TrieAble :: [[Int64]] -> Bool
-propListOfInt64TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
+propTrieOfKeyListOfInt64TrieAble :: [[Int64]] -> Bool
+propTrieOfKeyListOfInt64TrieAble xs = L.all (\x -> (fromByteString . toByteString $ x) == x) xs
 
 
 class TrieAble t => PropListSorted t where
-  propListSorted :: [t] -> Bool
-  propListSorted xss = compare sorted_xss xss' == EQ
+  propTrieOfKeyListSorted :: [t] -> Bool
+  propTrieOfKeyListSorted xss = compare sorted_xss xss' == EQ
         where
                 xss' = T.keys tr1
                 tr1 = L.reverse unsorted_xss
@@ -51,14 +51,14 @@ instance PropListSorted [Int32]
 instance PropListSorted [Int64]
 instance PropListSorted Text
 
-propListOfInt16Sorted :: [[Int16]] -> Bool
-propListOfInt16Sorted = propListSorted
+propTrieOfKeyListOfInt16Sorted :: [[Int16]] -> Bool
+propTrieOfKeyListOfInt16Sorted = propTrieOfKeyListSorted
 
-propListOfInt32Sorted :: [[Int32]] -> Bool
-propListOfInt32Sorted = propListSorted
+propTrieOfKeyListOfInt32Sorted :: [[Int32]] -> Bool
+propTrieOfKeyListOfInt32Sorted = propTrieOfKeyListSorted
 
-propListOfInt64Sorted :: [[Int64]] -> Bool
-propListOfInt64Sorted = propListSorted
+propTrieOfKeyListOfInt64Sorted :: [[Int64]] -> Bool
+propTrieOfKeyListOfInt64Sorted = propTrieOfKeyListSorted
 
-propKeyTextSorted :: [String] -> Bool
-propKeyTextSorted = propListSorted . L.map Tx.pack
+propTrieOfKeyTextSorted :: [String] -> Bool
+propTrieOfKeyTextSorted = propTrieOfKeyListSorted . L.map Tx.pack

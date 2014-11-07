@@ -41,14 +41,14 @@ instance TrieAble [Int64] where
 
 -------------------------------------------------------------------------------
 
-chunksOf :: Int -> [Word8] -> [[Word8]]  
-chunksOf n xs = assert (length xs `mod` n == 0) .  L.unfoldr (chunk n) $ xs
+chunksOf :: Int -> [a] -> [[a]]
+chunksOf n xs = assert (length xs `mod` n == 0) . L.unfoldr chunk $ xs
   where
-    chunk n w8l = if L.null firsts
+    chunk list = if L.null firsts
                  then Nothing
                  else Just (firsts, rest)
         where
-          (firsts, rest) = splitAt n w8l
+          (firsts, rest) = splitAt n list
 
 -----------------------------------------------------------------------          
 
